@@ -10,6 +10,15 @@ from nltk.corpus import stopwords
 from keyword_extraction import get_bigrams
 stop_words = set(stopwords.words("english"))
 from tfidf_keywords import get_top_tfidf_words
+from detect_category import detect_category
+
+
+
+
+
+
+
+
 
 
 
@@ -28,6 +37,20 @@ df["match"]=df["predicted_sentiment_text"]==df["predicted_sentiment_rating"]
 df["vader_label"] = df["text"].apply(vader_label)
 df["match_laber"] = df["vader_label"] == df["predicted_sentiment_rating"]
 df["clean_text"] = df["text"].apply(clean_text)
+
+
+
+
+df["category"] = df["clean_text"].apply(detect_category)
+print(df["category"].value_counts())
+print(df[df["category"]=="complaint"]["text"].head(10))
+
+
+
+
+
+
+
 
 
 all_words=[]
