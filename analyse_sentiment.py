@@ -4,6 +4,16 @@ pd.set_option("display.max_columns", None)
 from score_sentiment import score_sentiment
 from score_sentiment_rating import score_sentiment_rating
 from vader_sentiment import vader_label,vader_label_custom
+from clean_text import clean_text
+from collections import Counter as C
+from nltk.corpus import stopwords
+from keyword_extraction import get_bigrams
+stop_words = set(stopwords.words("english"))
+from tfidf_keywords import get_top_tfidf_words
+
+
+
+
 
 
 df = pd.read_csv("data/sample_reviews.csv")
@@ -17,7 +27,34 @@ print(df[["text","rating","predicted_sentiment_text","predicted_sentiment_rating
 df["match"]=df["predicted_sentiment_text"]==df["predicted_sentiment_rating"]
 df["vader_label"] = df["text"].apply(vader_label)
 df["match_laber"] = df["vader_label"] == df["predicted_sentiment_rating"]
+df["clean_text"] = df["text"].apply(clean_text)
 
+
+all_words=[]
+for text in df["clean_text"]:
+    words = text.split()
+    for word in words:
+        if word not in stop_words:
+            all_words.append(word)
+word_count=C(all_words)
+print(word_count.most_common(15))
+
+
+
+all_bigrams=[]
+for text in df["clean_text"]:
+    words =[]
+    for w in text.split():
+        if w not in stop_words:
+            words.append(w)
+    clean_sentance = " ".join(words)
+    bigrams = get_bigrams(clean_sentance)
+
+    for i in bigrams:
+        all_bigrams.append(i)
+
+bigram_count = C(all_bigrams)
+print(bigram_count.most_common(15))
 
 
 print("Rule-based-accuracy: ",df["match"].mean())
@@ -36,3 +73,7 @@ for t in [0.05, 0.1, 0.2, 0.3]:
     df["temp_label"]=df["text"].apply(lambda x: vader_label_custom(x,threshold=t))
     accuracy=(df["temp_label"] == df["predicted_sentiment_rating"]).mean()
     print(f"Threshold {t} : accuracy = {accuracy}")
+
+
+top_words = get_top_tfidf_words(df["clean_text"].tolist())
+print(top_words)
