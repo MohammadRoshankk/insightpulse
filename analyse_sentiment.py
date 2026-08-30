@@ -1,4 +1,5 @@
 import pandas as pd
+
 pd.set_option("display.width", 200)
 pd.set_option("display.max_columns", None)
 from score_sentiment import score_sentiment
@@ -11,7 +12,8 @@ from keyword_extraction import get_bigrams
 stop_words = set(stopwords.words("english"))
 from tfidf_keywords import get_top_tfidf_words
 from detect_category import detect_category
-
+# pyrefly: ignore [missing-import]
+import matplotlib.pyplot as plt
 
 
 
@@ -45,6 +47,34 @@ df["category"] = df["clean_text"].apply(detect_category)
 print(df["category"].value_counts())
 print(df[df["category"]=="complaint"]["text"].head(10))
 
+
+
+
+
+
+df["date"] = pd.to_datetime(df["date"])
+# print(df["date"].dtype)
+# print(df["date"].max())
+# print(df["date"].min())
+
+
+df["month"] = df["date"].dt.to_period("M")
+
+monthly_avg_rating = df.groupby("month")["rating"].mean()
+print(monthly_avg_rating)
+
+
+monthly_avg_rating.plot(kind="line", marker= "o")
+plt.title("Average monthly rating")
+plt.xlabel("Month")
+plt.ylabel("Average Rating")
+plt.show()
+
+
+
+
+monthly_counts = df.groupby("month")["review_id"].count()
+print(monthly_counts)
 
 
 
