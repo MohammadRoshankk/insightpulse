@@ -1,3 +1,4 @@
+from executive_summary import batch_summarize
 import pandas as pd
 
 pd.set_option("display.width", 200)
@@ -14,7 +15,7 @@ from tfidf_keywords import get_top_tfidf_words
 from detect_category import detect_category
 # pyrefly: ignore [missing-import]
 import matplotlib.pyplot as plt
-
+from executive_summary import generate_summary,final_summary
 
 
 
@@ -130,3 +131,22 @@ for t in [0.05, 0.1, 0.2, 0.3]:
 
 top_words = get_top_tfidf_words(df["clean_text"].tolist())
 print(top_words)
+
+
+
+
+
+# GENERATE EXECTUIVE SUMMARY
+
+sample_reviews = "\n".join(df["text"].head(250).tolist())
+# summary = generate_summary(sample_reviews)
+# print ("Summary of the reviews are : " +"\n" ,summary)
+all_reviews = df["clean_text"].tolist()
+batch_summary = batch_summarize(all_reviews,batch_size=50)
+print("--- BATCH SUMMARIES ---")
+
+for i ,s in enumerate(batch_summary):
+    print(f"Batch {i+1}: {s}\n")
+
+print("--- FINAL SUMMARY ---")
+print(final_summary(batch_summary))
