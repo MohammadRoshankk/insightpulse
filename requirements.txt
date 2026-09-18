@@ -13,6 +13,7 @@ cryptography==50.0.1
 cycler==0.12.1
 defusedxml==0.7.1
 distro==1.9.0
+fastapi==0.141.1
 filelock==3.32.4
 fonttools==4.63.0
 fsspec==2026.7.0
