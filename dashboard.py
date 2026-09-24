@@ -1,4 +1,6 @@
-from vader_sentiment import vader_label
+
+from transformer_sentiment import transformer_label
+#from vader_sentiment import vader_label
 from detect_category import detect_category as dc
 import pandas as pd
 import streamlit as st
@@ -11,7 +13,7 @@ st.metric("Total Reviews",len(df))
 st.metric("Average Rating",round(df["rating"].mean(),2))
 
 df["text"] = df["text"].fillna("No review")
-df["sentiment"] = df["text"].apply(vader_label)
+df["sentiment"] = df["text"].apply(transformer_label)
 
 
 
@@ -36,3 +38,4 @@ st.bar_chart(category_counts)
 st.subheader("Sample Complaints")
 complaints = df[df["category"]=="complaint"]["text"].head(10)
 st.write(complaints)
+
