@@ -1,0 +1,10 @@
+venv/
+.env
+.git/
+__pycache__/
+*.pyc
+.DS_Store
+.vscode/
+.idea/
+scratch/
+insightpulse.db

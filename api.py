@@ -9,6 +9,11 @@ import os
 from dotenv import load_dotenv
 from fastapi import Header, HTTPException, FastAPI, Depends
 
+from database import Base, engine
+import auth_models  # registers the Client table with Base
+
+Base.metadata.create_all(engine)  # creates any missing tables at startup
+
 
 load_dotenv()
 
@@ -19,6 +24,7 @@ def verify_api_key(x_api_key: str = Header(...)):
 
     if not client:
         raise HTTPException(status_code=401, detail="Invalid API Key")
+
 
 
 
