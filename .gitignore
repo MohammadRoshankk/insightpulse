@@ -17,3 +17,5 @@ __pycache__/
 
 # Project specific
 scratch/
+.streamlit/secrets.toml
+insightpulse.db
