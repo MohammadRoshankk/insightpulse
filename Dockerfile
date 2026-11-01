@@ -6,8 +6,8 @@ WORKDIR /app
 RUN pip install --no-cache-dir torch==2.13.0 --index-url https://download.pytorch.org/whl/cpu
 
 # Install the remaining pinned dependencies
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+COPY requirements-api.txt .
+RUN pip install --no-cache-dir -r requirements-api.txt
 
 # Download NLTK stopwords so the NLP code works inside the container
 RUN python -m nltk.downloader stopwords

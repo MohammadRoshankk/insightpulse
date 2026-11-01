@@ -1,4 +1,3 @@
-from six.moves.urllib import response
 import os
 from dotenv import load_dotenv
 from google import genai
@@ -26,8 +25,11 @@ Summary:"""
 
 
 def batch_summarize(all_reviews, batch_size=50):
+    import time
     batche_summaries = []
     for i in range(0,len(all_reviews),batch_size):
+        if i > 0:
+            time.sleep(12)  # avoid exceeding free tier 5 RPM limit
         batch = all_reviews[i:i+batch_size]
         batch_text = "\n".join(batch)
         summary = generate_summary(batch_text)
@@ -36,6 +38,8 @@ def batch_summarize(all_reviews, batch_size=50):
 
 
 def final_summary(batch_summarize):
+    import time
+    time.sleep(15)  # allow rate limit bucket to reset
     combined = "\n\n".join(batch_summarize)
     instruction="You are given several partial summaries of different batches of customer reviews. Synthesize them into ONE final executive summary (4-5 sentences) covering overall sentiment, key positives, key complaints, and any notable patterns across the full dataset."
     return generate_summary(combined,instruction=instruction)
