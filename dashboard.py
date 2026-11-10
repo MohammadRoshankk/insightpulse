@@ -14,7 +14,7 @@ import streamlit as st
 from dotenv import load_dotenv
 
 # Internal database and processing modules
-from database import SessionLocal, Review
+from database import SessionLocal, Review, get_database_url
 from clean_text import clean_text
 from detect_category import detect_category
 from tfidf_keywords import get_top_tfidf_words
@@ -22,7 +22,21 @@ from keyword_extraction import get_bigrams
 
 load_dotenv()
 
-CLOUD_MODE = os.getenv("CLOUD_MODE") == "1"
+def check_cloud_mode() -> bool:
+    if os.getenv("CLOUD_MODE") == "1":
+        return True
+    try:
+        if hasattr(st, "secrets") and st.secrets.get("CLOUD_MODE") == "1":
+            return True
+    except Exception:
+        pass
+    # If database layer resolved to public demo database, automatically activate cloud mode
+    db_target = get_database_url()
+    if "public_reviews.db" in db_target:
+        return True
+    return False
+
+CLOUD_MODE = check_cloud_mode()
 
 def predict_sentiment(text):
     """Load the model only when it is actually needed (never in cloud mode)."""
